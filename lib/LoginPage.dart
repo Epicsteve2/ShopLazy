@@ -1,9 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:shoplazy/SignUp.dart';
 import 'package:shoplazy/StartScreen.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -15,10 +12,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   BuildContext scaffoldContext;
   bool isChecked = false;
+  final formKey =
+      new GlobalKey<FormState>(); //I know global variables ar bad, but idc atm
 
   @override
   Widget build(BuildContext context) {
-    _checkLoggedIn(context);
     return Scaffold(body: Builder(builder: (BuildContext context) {
       scaffoldContext = context;
       return Container(
@@ -34,8 +32,6 @@ class _LoginPageState extends State<LoginPage> {
     }));
   }
 
-  final formKey =
-      new GlobalKey<FormState>(); //I know global variables ar bad, but idc atm
   String _email;
   String _pass;
 
@@ -49,8 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                   context, MaterialPageRoute(builder: (context) => SignUp())),
               child: Text("Sign Up")),
           ElevatedButton(
-              onPressed: () => validateAndSubmit(context),
-              child: Text("Login")),
+              onPressed: () => validateAndSubmit(), child: Text("Login")),
         ],
       ),
       InkWell(
@@ -69,27 +64,26 @@ class _LoginPageState extends State<LoginPage> {
     ]);
   }
 
-  void _checkLoggedIn(context) {
-    FirebaseAuth.instance.authStateChanges().listen((User user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-        if(!Navigator.canPop(context))Navigator.push(
-            context, MaterialPageRoute(builder: (context) => StartScreen()));
-      }
-    });
-  }
-
-  bool validateAndSave() {
+  void validateAndSubmit() {
     print("attempting to login");
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
       print(_email + ":" + _pass);
-      return true;
+
+      if (_email != "test@test.com") {
+        createSnackBar('No user found for that email.');
+        return;
+      }
+      if (_pass != "test12") {
+        createSnackBar('Wrong password provided for that user.');
+        return;
+      }
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => StartScreen()));
+    } else {
+      print("not validated!");
     }
-    return false;
   }
 
   void createSnackBar(String message) {
@@ -98,26 +92,6 @@ class _LoginPageState extends State<LoginPage> {
 
     // Find the Scaffold in the Widget tree and use it to show a SnackBar!
     Scaffold.of(scaffoldContext).showSnackBar(snackBar);
-  }
-
-  Future<dynamic> validateAndSubmit(context) async {
-    if (validateAndSave()) {
-      try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: _email, password: _pass);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => StartScreen()));
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'user-not-found') {
-          createSnackBar('No user found for that email.');
-          //print('No user found for that email.');
-        } else if (e.code == 'wrong-password') {
-          createSnackBar('Wrong password provided for that user.');
-        } else {
-          createSnackBar("Error: " + e.code);
-        }
-      }
-    }
   }
 
   Widget _usernameAndPasswords() {
@@ -160,11 +134,5 @@ class _LoginPageState extends State<LoginPage> {
       textAlign: TextAlign.center,
       style: TextStyle(fontSize: 50),
     );
-    /*return RichText(
-    textAlign: TextAlign.center,
-    text: TextSpan(
-      text: "ShopLazy",
-    ),
-  );*/
   }
 }

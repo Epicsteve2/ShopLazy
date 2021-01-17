@@ -7,6 +7,7 @@ import 'package:shoplazy/LoginPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 BuildContext testContext;
+BuildContext scaffoldContext;
 
 class InputItem {
   String name;
@@ -58,21 +59,6 @@ class ShoppingTableState extends State<ShoppingTable> {
       }
     }
   }
-
-  /*
-  deleteSelected() async {
-    setState(() {
-      if (selectedItems.isNotEmpty) {
-        List<InputItem> temp = [];
-        temp.addAll(selectedItems);
-        for (InputItem item in temp) {
-          items.remove(item);
-          selectedItems.remove(item);
-        }
-      }
-    });
-  }
-  */
 
   SingleChildScrollView dataBody() {
     return SingleChildScrollView(
@@ -151,51 +137,55 @@ class ShoppingTableState extends State<ShoppingTable> {
           ),
         ],
       ),
-      body: Column(
-        //mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        //verticalDirection: VerticalDirection.down,
-        children: <Widget>[
-          Expanded(
-            child: dataBody(),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+      body: Builder(builder: (BuildContext context) {
+        scaffoldContext = context;
+        return Column(
             //mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            //verticalDirection: VerticalDirection.down,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(20.0),
-                child: ElevatedButton(
-                  child: Text('Checkout'),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: Text("Checkout"),
-                        content: Text("Confirm checkout?"),
-                        actions: [
-                          OutlinedButton(
-                              onPressed: () =>
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop(),
-                              child: Text("No")),
-                          ElevatedButton(
-                              onPressed: () =>
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop(),
-                              child: Text("Yes")),
-                        ],
-                      ),
-                      barrierDismissible: true,
-                    );
-                    //TODO: Store the data to the database and optionally transition
-                  },
-                ),
+              Expanded(
+                child: dataBody(),
               ),
-            ],
-          ),
-        ],
-      ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                //mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      child: Text('Checkout'),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: Text("Checkout"),
+                            content: Text("Confirm checkout?"),
+                            actions: [
+                              OutlinedButton(
+                                  onPressed: () =>
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop(),
+                                  child: Text("No")),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
+                                    createSnackBar("Shopping List Submitted!");
+                                  },
+                                  child: Text("Yes")),
+                            ],
+                          ),
+                          barrierDismissible: true,
+                        );
+                        //TODO: Store the data to the database and optionally transition
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ]);
+      }),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
         onTap: onItemTap,
@@ -212,11 +202,17 @@ class ShoppingTableState extends State<ShoppingTable> {
       ),
     );
   }
+
+  void createSnackBar(String message) {
+    final snackBar =
+        new SnackBar(content: new Text(message), backgroundColor: Colors.red);
+
+    // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+    Scaffold.of(scaffoldContext).showSnackBar(snackBar);
+  }
 }
 
-Future<void> _signOut(context) async {
-  await FirebaseAuth.instance.signOut();
-
+void _signOut(context) {
   Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
 }
 
@@ -250,9 +246,6 @@ void getCurrentUserEmail() async {
 class InputItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Your Shopping List',
-      home: ShoppingTable(),
-    );
+    return ShoppingTable();
   }
 }

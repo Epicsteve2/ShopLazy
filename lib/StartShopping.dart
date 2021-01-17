@@ -5,7 +5,7 @@ class Ingredient {
   Ingredient(this.name, this.quantity);
   int quantity;
   String name;
-  bool isEnabled = false;
+  bool isEnabled = true;
 }
 
 List<Ingredient> ingredientList = [
@@ -14,9 +14,7 @@ List<Ingredient> ingredientList = [
 ];
 
 class StartShopping extends StatelessWidget {
-  final ShoppingList lists;
-
-  StartShopping({@required this.lists}); // Sending data through screens
+  StartShopping(); // Sending data through screens
 
   @override
   Widget build(BuildContext context) {

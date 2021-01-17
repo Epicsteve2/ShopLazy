@@ -30,9 +30,7 @@ class StartScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _signOut(context) async {
-    await FirebaseAuth.instance.signOut();
-
+  void _signOut(context) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
