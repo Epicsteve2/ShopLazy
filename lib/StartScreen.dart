@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shoplazy/ChooseList.dart';
 import 'package:shoplazy/InputItems.dart';
 import 'package:shoplazy/LoginPage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class StartScreen extends StatelessWidget {
   @override //TODO start and finish
@@ -57,7 +56,7 @@ class Options extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         height: 200,
-        child: GridView.count(crossAxisCount: 2, children: [
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Card(
               child: InkWell(
                   onTap: () {
@@ -65,6 +64,7 @@ class Options extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => InputItems()));
                   },
                   child: Container(
+                    padding: EdgeInsets.all(25),
                     child: Center(
                         child: Text(
                       'I Want To Shop',
@@ -80,6 +80,7 @@ class Options extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => ChooseList()));
                   },
                   child: Container(
+                    padding: EdgeInsets.all(25),
                     child: Center(
                         child: Text(
                       'I Want To Ask Others \n To Shop For Me ',

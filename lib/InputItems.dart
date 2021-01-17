@@ -205,7 +205,7 @@ class ShoppingTableState extends State<ShoppingTable> {
 
   void createSnackBar(String message) {
     final snackBar =
-        new SnackBar(content: new Text(message), backgroundColor: Colors.red);
+        new SnackBar(content: new Text(message), backgroundColor: Colors.blue);
 
     // Find the Scaffold in the Widget tree and use it to show a SnackBar!
     Scaffold.of(scaffoldContext).showSnackBar(snackBar);
