@@ -1,8 +1,7 @@
 # ShopLazy
 Hack The North 2021 Project - ShopLazy
 
-Project Demo:
-
+Project Demo (Youtube link):\
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=1Oh5CRH3aMU
 " target="_blank"><img src="http://img.youtube.com/vi/1Oh5CRH3aMU/0.jpg" 
 alt="Project Demo" width="646" height="480" border="10" /></a>
